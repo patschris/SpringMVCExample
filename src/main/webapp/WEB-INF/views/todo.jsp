@@ -6,7 +6,7 @@
 <h2>Add a todo</h2>
 <form method="post">
     <input name="description" type="text"/>
-    <input name="submit" type="button"/>
+    <input name="submit" type="submit"/>
 </form>
 </body>
 </html>
