@@ -3,8 +3,9 @@ package com.in28minutes.todo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
@@ -17,22 +18,29 @@ public class TodoController {
     @Autowired
     TodoService todoService;
 
-    @RequestMapping(value = "/list-todos", method = RequestMethod.GET)
+    @GetMapping(value = "/list-todos")
     public String showListTodos(ModelMap modelMap) {
         modelMap.addAttribute("todos", todoService.retrieveTodos("in28Minutes"));
         return "list-todos";
     }
 
-    @RequestMapping(value = "/add-todo", method = RequestMethod.GET)
+    @GetMapping(value = "/add-todo")
     public String addTodo() {
         return "todo";
     }
 
-    @RequestMapping(value = "/add-todo", method = RequestMethod.POST)
+    @PostMapping(value = "/add-todo")
     public String submitTodo(@RequestParam String description, ModelMap modelMap) {
         String name = String.valueOf(modelMap.getAttribute("name"));
         todoService.addTodo(name, description, new Date(), false);
-        modelMap.clear();   // gia na min pernaei to name san parametro sto url
-        return "redirect:list-todos"; // redirect gia na min ksanafortwnw to modelmap
+        modelMap.clear();   // in order not to pass the session attribute "name" as url parameter
+        return "redirect:list-todos"; // redirect to list-todos, otherwise you should add the model attributes again
+    }
+
+    @GetMapping(value = "/delete-todo/{id}")
+    public String deleteToDo (@PathVariable int id, ModelMap modelMap) {
+        todoService.deleteTodo(id);
+        modelMap.clear();
+        return "redirect:/list-todos"; //note the slash
     }
 }
