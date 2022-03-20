@@ -3,10 +3,12 @@ package com.in28minutes.todo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.validation.Valid;
 import java.util.Date;
 
 @Controller
@@ -28,7 +30,11 @@ public class TodoController {
     }
 
     @PostMapping(value = "/add-todo")
-    public String submitTodo(Todo todo, ModelMap modelMap) {
+    public String submitTodo( ModelMap modelMap, @Valid Todo todo, BindingResult result) {
+        // check for validation errors
+        if (result.hasErrors()) {
+            return "todo";
+        }
         String name = String.valueOf(modelMap.getAttribute("name"));
         todoService.addTodo(name, todo.getDesc(), new Date(), false);
         modelMap.clear();   // in order not to pass the session attribute "name" as url parameter
