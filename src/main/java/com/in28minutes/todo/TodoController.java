@@ -6,13 +6,10 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
 
 import java.util.Date;
 
 @Controller
-@SessionAttributes("name")
 public class TodoController {
 
     @Autowired
@@ -25,14 +22,15 @@ public class TodoController {
     }
 
     @GetMapping(value = "/add-todo")
-    public String addTodo() {
+    public String addTodo(ModelMap modelMap) {
+        modelMap.addAttribute("todo", new Todo()); // in order to use spring mvc tags
         return "todo";
     }
 
     @PostMapping(value = "/add-todo")
-    public String submitTodo(@RequestParam String description, ModelMap modelMap) {
+    public String submitTodo(Todo todo, ModelMap modelMap) {
         String name = String.valueOf(modelMap.getAttribute("name"));
-        todoService.addTodo(name, description, new Date(), false);
+        todoService.addTodo(name, todo.getDesc(), new Date(), false);
         modelMap.clear();   // in order not to pass the session attribute "name" as url parameter
         return "redirect:list-todos"; // redirect to list-todos, otherwise you should add the model attributes again
     }
