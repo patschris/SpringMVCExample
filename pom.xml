@@ -6,6 +6,14 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 
+	<properties>
+		<project.java.version>1.8</project.java.version>
+		<aspectj-plugin.version>1.9.7</aspectj-plugin.version>
+		<org.springframework.version>5.2.19.RELEASE</org.springframework.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>javax</groupId>
@@ -17,13 +25,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>5.2.19.RELEASE</version>
-		</dependency>
-
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
+			<version>${org.springframework.version}</version>
 		</dependency>
 
 		<dependency>
@@ -56,7 +58,31 @@
 			<artifactId>hibernate-validator</artifactId>
 			<version>7.0.4.Final</version>
 		</dependency>
-
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>${aspectj-plugin.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>${aspectj-plugin.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+			<version>2.3.12.RELEASE</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -65,14 +91,16 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.2</version>
+					<version>3.7.0</version>
 					<configuration>
+						<source>${java.version}</source>
+						<target>${java.version}</target>
+						<encoding>${project.build.sourceEncoding}</encoding>
 						<verbose>true</verbose>
-						<source>1.8</source>
-						<target>1.8</target>
 						<showWarnings>true</showWarnings>
 					</configuration>
 				</plugin>
+
 				<plugin>
 					<groupId>org.apache.tomcat.maven</groupId>
 					<artifactId>tomcat7-maven-plugin</artifactId>
@@ -81,6 +109,31 @@
 						<path>/</path>
 						<contextReloadable>true</contextReloadable>
 					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>aspectj-maven-plugin</artifactId>
+					<version>${aspectj-plugin.version}</version>
+					<configuration>
+						<complianceLevel>${java.version}</complianceLevel>
+						<source>${java.version}</source>
+						<target>${java.version}</target>
+						<showWeaveInfo>true</showWeaveInfo>
+						<verbose>true</verbose>
+						<Xlint>ignore</Xlint>
+						<encoding>UTF-8</encoding>
+					</configuration>
+					<executions>
+						<execution>
+							<goals>
+								<goal>compile</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
 				</plugin>
 			</plugins>
 		</pluginManagement>
