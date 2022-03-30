@@ -17,5 +17,8 @@
         date_input.datepicker(options);
     })
 </script>
+<script>
+    $('.nav-item a').addClass("active");
+</script>
 </body>
 </html>

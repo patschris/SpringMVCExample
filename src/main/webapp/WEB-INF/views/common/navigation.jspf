@@ -1,23 +1,20 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="<c:url value="/login"/>">Home</a>
+                    <a class="nav-link" href="<c:url value="/login"/>">Home</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="<c:url value="/list-todos"/>">List</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="${pageContext.request.contextPath}/add-todo">Add</a>
+                    <a class="nav-link" href="<c:url value="/add-todo"/>">Add</a>
                 </li>
             </ul>
             <span class="navbar-text">
-                        Todo app
-                    </span>
+                Todo app
+            </span>
         </div>
     </div>
 </nav>

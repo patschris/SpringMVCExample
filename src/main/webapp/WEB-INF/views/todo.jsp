@@ -1,5 +1,6 @@
 <%@ include file="common/header.jspf"%>
 <%@ include file="common/navigation.jspf"%>
+
 <div class="container">
     <h2>Add a todo</h2>
     <form:form method="post" modelAttribute="todo">
@@ -18,4 +19,5 @@
         <input class="btn-success" name="submit" type="submit"/>
     </form:form>
 </div>
+
 <%@ include file="common/footer.jspf"%>

@@ -1,5 +1,6 @@
 <%@ include file="common/header.jspf"%>
 <%@ include file="common/navigation.jspf"%>
+
 <div class="container">
     Hi, ${name}. <br/>
     Your todos are: <br/>
@@ -26,10 +27,9 @@
         </c:forEach>
         </tbody>
     </table>
-
-
     <div>
         <a class="btn btn-success" href="<c:url value="/add-todo"/>">Add</a>
     </div>
 </div>
+
 <%@ include file="common/footer.jspf"%>
