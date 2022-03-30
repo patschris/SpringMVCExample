@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>Yahoo!!</title>
-        <link href="webjars/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+        <link href="${pageContext.request.contextPath}/webjars/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
     </head>
     <body>
         <div class="container">
@@ -14,7 +14,7 @@
                     <th>Description</th>
                     <th>Date</th>
                     <th>Is Completed?</th>
-                    <th>Delete</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -23,7 +23,10 @@
                         <td>${todo.desc}</td>
                         <td>${todo.targetDate} </td>
                         <td >${todo.done}</td>
-                        <td><a class="btn btn-danger" href="/delete-todo/${todo.id}">Delete</a></td>
+                        <td>
+                            <a class="btn btn-info" href="/update-todo/${todo.id}">Update</a>
+                            <a class="btn btn-danger" href="/delete-todo/${todo.id}">Delete</a>
+                        </td>
                     </tr>
                 </c:forEach>
                 </tbody>
@@ -31,11 +34,11 @@
 
 
             <div>
-                <a class="btn btn-success" href="/add-todo">Add</a>
+                <a class="btn btn-success" href="<c:url value="/add-todo"/>">Add</a>
             </div>
         </div>
 
-        <script src="webjars/jquery/3.6.0/jquery.min.js"></script>
-        <script src="webjars/bootstrap/5.1.3/js/bootstrap.min.js"></script>
+        <script src="${pageContext.request.contextPath}/webjars/jquery/3.6.0/jquery.min.js"></script>
+        <script src="${pageContext.request.contextPath}/webjars/bootstrap/5.1.3/js/bootstrap.min.js"></script>
     </body>
 </html>

@@ -7,11 +7,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import javax.validation.Valid;
 import java.util.Date;
 
 @Controller
+@SessionAttributes("name")
 public class TodoController {
 
     @Autowired
@@ -30,7 +32,7 @@ public class TodoController {
     }
 
     @PostMapping(value = "/add-todo")
-    public String submitTodo( ModelMap modelMap, @Valid Todo todo, BindingResult result) {
+    public String submitTodo(ModelMap modelMap, @Valid Todo todo, BindingResult result) {
         // check for validation errors
         if (result.hasErrors()) {
             return "todo";
@@ -46,5 +48,25 @@ public class TodoController {
         todoService.deleteTodo(id);
         modelMap.clear();
         return "redirect:/list-todos"; //note the slash
+    }
+
+    @GetMapping(value = "/update-todo/{id}")
+    public String updateToDoGet (ModelMap modelMap, @PathVariable int id) {
+        Todo todo = todoService.retrieveTodo(id);
+        modelMap.clear();
+        modelMap.addAttribute("todo", todo);
+        return "todo";
+    }
+
+    @PostMapping(value = "/update-todo/{id}")
+    public String updateToDoPost (ModelMap modelMap, @Valid Todo todo, BindingResult result) {
+        if (result.hasErrors()) {
+            return "todo";
+        }
+        todo.setTargetDate(new Date());
+        todo.setUser(String.valueOf(modelMap.getAttribute("name")));
+        todoService.updateTodo(todo);
+        modelMap.clear();   // in order not to pass the session attribute "name" as url parameter
+        return "redirect:/list-todos";
     }
 }
