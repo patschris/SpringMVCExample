@@ -1,15 +1,16 @@
 package com.in28minutes.todo;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Controller
@@ -18,6 +19,18 @@ public class TodoController {
 
     @Autowired
     TodoService todoService;
+
+    /* InitBiner is used when you want to customize the request being sent to the controller */
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        /* Always use this format for all the dates */
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, false));
+
+
+        StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);
+        binder.registerCustomEditor(String.class, stringTrimmerEditor);
+    }
 
     @GetMapping(value = "/list-todos")
     public String showListTodos(ModelMap modelMap) {
@@ -63,7 +76,6 @@ public class TodoController {
         if (result.hasErrors()) {
             return "todo";
         }
-        todo.setTargetDate(new Date());
         todo.setUser(String.valueOf(modelMap.getAttribute("name")));
         todoService.updateTodo(todo);
         modelMap.clear();   // in order not to pass the session attribute "name" as url parameter
