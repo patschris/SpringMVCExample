@@ -1,4 +1,4 @@
-package com.in28minutes.todo;
+package com.in28minutes.data;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

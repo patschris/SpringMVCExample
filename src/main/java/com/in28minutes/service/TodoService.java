@@ -1,5 +1,6 @@
-package com.in28minutes.todo;
+package com.in28minutes.service;
 
+import com.in28minutes.data.Todo;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

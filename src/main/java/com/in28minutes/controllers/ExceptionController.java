@@ -1,4 +1,4 @@
-package com.in28minutes.exceptions;
+package com.in28minutes.controllers;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

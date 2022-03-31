@@ -1,4 +1,4 @@
-package com.in28minutes.login;
+package com.in28minutes.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
