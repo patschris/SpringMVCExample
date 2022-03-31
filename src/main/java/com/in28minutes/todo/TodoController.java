@@ -13,12 +13,17 @@ import javax.validation.Valid;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.in28minutes.security.LoggedInUser.getLoggedInUserName;
+
 @Controller
-@SessionAttributes("name")
 public class TodoController {
 
+    public TodoService todoService;
+
     @Autowired
-    TodoService todoService;
+    public void setTodoService(TodoService todoService) {
+        this.todoService = todoService;
+    }
 
     /* InitBiner is used when you want to customize the request being sent to the controller */
     @InitBinder
@@ -34,7 +39,8 @@ public class TodoController {
 
     @GetMapping(value = "/list-todos")
     public String showListTodos(ModelMap modelMap) {
-        modelMap.addAttribute("todos", todoService.retrieveTodos("in28Minutes"));
+        modelMap.addAttribute("name", getLoggedInUserName());
+        modelMap.addAttribute("todos", todoService.retrieveTodos(getLoggedInUserName()));
         return "list-todos";
     }
 
@@ -50,8 +56,7 @@ public class TodoController {
         if (result.hasErrors()) {
             return "todo";
         }
-        String name = String.valueOf(modelMap.getAttribute("name"));
-        todoService.addTodo(name, todo.getDesc(), new Date(), false);
+        todoService.addTodo(getLoggedInUserName(), todo.getDesc(), new Date(), false);
         modelMap.clear();   // in order not to pass the session attribute "name" as url parameter
         return "redirect:list-todos"; // redirect to list-todos, otherwise you should add the model attributes again
     }
@@ -76,7 +81,7 @@ public class TodoController {
         if (result.hasErrors()) {
             return "todo";
         }
-        todo.setUser(String.valueOf(modelMap.getAttribute("name")));
+        todo.setUser(getLoggedInUserName());
         todoService.updateTodo(todo);
         modelMap.clear();   // in order not to pass the session attribute "name" as url parameter
         return "redirect:/list-todos";

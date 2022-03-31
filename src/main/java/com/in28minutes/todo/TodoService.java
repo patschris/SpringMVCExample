@@ -12,9 +12,9 @@ public class TodoService {
     private static int todoCount = 3;
 
     static {
-        todos.add(new Todo(1, "in28Minutes", "Learn Spring MVC", new Date(), false));
-        todos.add(new Todo(2, "in28Minutes", "Learn Struts", new Date(), false));
-        todos.add(new Todo(3, "in28Minutes", "Learn Hibernate", new Date(), false));
+        todos.add(new Todo(1, "cpats", "Learn Spring MVC", new Date(), false));
+        todos.add(new Todo(2, "cpats", "Learn Struts", new Date(), false));
+        todos.add(new Todo(3, "cpats", "Learn Hibernate", new Date(), false));
     }
 
     public void addTodo(String name, String desc, Date targetDate, boolean isDone) {
