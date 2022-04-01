@@ -10,6 +10,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
@@ -34,58 +35,57 @@ public class TodoController {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, false));
 
-
+        /* Trim the strings */
         StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);
         binder.registerCustomEditor(String.class, stringTrimmerEditor);
     }
 
     @GetMapping(value = "/list-todos")
-    public String showListTodos(ModelMap modelMap) {
-        modelMap.addAttribute("name", getLoggedInUserName());
-        modelMap.addAttribute("todos", todoService.retrieveTodos(getLoggedInUserName()));
-        return "list-todos";
+    public ModelAndView showListTodos() {
+        ModelAndView modelAndView = new ModelAndView("list-todos");
+        modelAndView.addObject("name", getLoggedInUserName());
+        modelAndView.addObject("todos", todoService.retrieveTodos(getLoggedInUserName()));
+        return modelAndView;
     }
 
     @GetMapping(value = "/add-todo")
-    public String addTodo(ModelMap modelMap) {
-        modelMap.addAttribute("todo", new Todo()); // in order to use spring mvc tags
-        return "todo";
+    public ModelAndView addTodo() {
+        ModelAndView modelAndView = new ModelAndView("todo");
+        modelAndView.addObject("todo", new Todo()); // in order to use spring mvc tags
+        return modelAndView;
     }
 
     @PostMapping(value = "/add-todo")
-    public String submitTodo(ModelMap modelMap, @Valid Todo todo, BindingResult result) {
+    public ModelAndView submitTodo(ModelMap modelMap, @Valid Todo todo, BindingResult result) {
         // check for validation errors
         if (result.hasErrors()) {
-            return "todo";
+            return new ModelAndView("todo");
         }
         todoService.addTodo(getLoggedInUserName(), todo.getDesc(), new Date(), false);
-        modelMap.clear();   // in order not to pass the session attribute "name" as url parameter
-        return "redirect:list-todos"; // redirect to list-todos, otherwise you should add the model attributes again
+        // redirect to list-todos, otherwise you should add the model attributes again
+        return new ModelAndView("redirect:list-todos");
     }
 
     @GetMapping(value = "/delete-todo/{id}")
-    public String deleteToDo (@PathVariable int id, ModelMap modelMap) {
+    public ModelAndView deleteToDo (@PathVariable int id) {
         todoService.deleteTodo(id);
-        modelMap.clear();
-        return "redirect:/list-todos"; //note the slash
+        return new ModelAndView("redirect:/list-todos"); //note the slash
     }
 
     @GetMapping(value = "/update-todo/{id}")
-    public String updateToDoGet (ModelMap modelMap, @PathVariable int id) {
-        Todo todo = todoService.retrieveTodo(id);
-        modelMap.clear();
-        modelMap.addAttribute("todo", todo);
-        return "todo";
+    public ModelAndView updateToDoGet (@PathVariable int id) {
+        ModelAndView modelAndView = new ModelAndView("todo");
+        modelAndView.addObject("todo", todoService.retrieveTodo(id));
+        return modelAndView;
     }
 
     @PostMapping(value = "/update-todo/{id}")
-    public String updateToDoPost (ModelMap modelMap, @Valid Todo todo, BindingResult result) {
+    public ModelAndView updateToDoPost (@Valid Todo todo, BindingResult result) {
         if (result.hasErrors()) {
-            return "todo";
+            return new ModelAndView("todo");
         }
         todo.setUser(getLoggedInUserName());
         todoService.updateTodo(todo);
-        modelMap.clear();   // in order not to pass the session attribute "name" as url parameter
-        return "redirect:/list-todos";
+        return new ModelAndView("redirect:/list-todos");
     }
 }

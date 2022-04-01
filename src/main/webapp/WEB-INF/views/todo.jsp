@@ -3,6 +3,8 @@
 
 <div class="container">
     <h2>Add a todo</h2>
+<%--    If there is no action, the request is sent by default to the same url that the request came from.
+        So, /add-todo but with post method--%>
     <form:form method="post" modelAttribute="todo">
         <form:hidden path="id"/>
         <fieldset class="form-group">
