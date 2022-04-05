@@ -1,4 +1,4 @@
-package com.in28minutes.data;
+package com.in28minutes.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.Objects;
@@ -15,7 +18,10 @@ import java.util.Objects;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+//@Entity(name="todo")
 public class Todo {
+//    @Id
+//    @GeneratedValue
     private int id;
 
     private String user;

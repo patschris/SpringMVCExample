@@ -1,6 +1,6 @@
 package com.in28minutes.controllers;
 
-import com.in28minutes.data.Todo;
+import com.in28minutes.entities.Todo;
 import com.in28minutes.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
