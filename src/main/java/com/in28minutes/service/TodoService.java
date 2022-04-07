@@ -1,52 +1,41 @@
 package com.in28minutes.service;
 
 import com.in28minutes.entities.Todo;
+import com.in28minutes.entities.Users;
+import com.in28minutes.repositories.TodoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TodoService {
-    private static final List<Todo> todos = new ArrayList<>();
-    private static int todoCount = 3;
 
-    static {
-        todos.add(new Todo(1, "cpats", "Learn Spring MVC", new Date(), false));
-        todos.add(new Todo(2, "cpats", "Learn Struts", new Date(), false));
-        todos.add(new Todo(3, "cpats", "Learn Hibernate", new Date(), false));
+    TodoRepository todoRepository;
+
+    @Autowired
+    public void setTodoRepository(TodoRepository todoRepository) {
+        this.todoRepository = todoRepository;
     }
 
-    public void addTodo(String name, String desc, Date targetDate, boolean isDone) {
-        todos.add(new Todo(++todoCount, name, desc, targetDate, isDone));
+    public void addTodo(Todo todo) {
+        todoRepository.save(todo);
     }
 
     public void deleteTodo(int id) {
-        todos.removeIf(todo -> todo.getId() == id);
+        todoRepository.deleteById(id);
     }
 
-    public List<Todo> retrieveTodos(String user) {
-        List<Todo> filteredTodos = new ArrayList<>();
-        for (Todo todo : todos) {
-            if (todo.getUser().equals(user)) {
-                filteredTodos.add(todo);
-            }
-        }
-        return filteredTodos;
+    public List<Todo> retrieveTodos(Users users) {
+        return todoRepository.findByUsers(users);
     }
 
-    public Todo retrieveTodo(int id) {
-        for (Todo todo : todos) {
-            if (todo.getId() == id) {
-                return todo;
-            }
-        }
-        return null;
+    public Optional<Todo> retrieveTodo(int id) {
+        return todoRepository.findById(id);
     }
 
     public void updateTodo(Todo todo) {
-        todos.remove(todo);
-        todos.add(todo);
+        todoRepository.save(todo);
     }
 }

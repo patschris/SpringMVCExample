@@ -10,12 +10,11 @@ public class MyErrorController implements ErrorController {
 
     @Override
     public String getErrorPath() {
-        return "/error";
+        return "error";
     }
 
     @RequestMapping("/error")
     public ModelAndView handleError() {
-        //do something like logging
         return new ModelAndView(getErrorPath());
     }
 }

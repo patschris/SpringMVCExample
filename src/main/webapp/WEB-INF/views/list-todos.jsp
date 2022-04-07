@@ -16,7 +16,7 @@
         <tbody>
         <c:forEach items="${todos}" var="todo">
             <tr>
-                <td>${todo.desc}</td>
+                <td>${todo.description}</td>
                 <td><fmt:formatDate pattern="dd/MM/yyyy" value="${todo.targetDate}" /></td>
                 <td>${todo.done}</td>
                 <td>
@@ -28,7 +28,7 @@
         </tbody>
     </table>
     <div>
-        <a class="btn btn-success" href="<c:url value="/add-todo"/>">Add</a>
+        <a class="btn btn-success" href="/add-todo">Add</a>
     </div>
 </div>
 

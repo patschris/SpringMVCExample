@@ -1,12 +1,12 @@
 package com.in28minutes.controllers;
 
 import com.in28minutes.entities.Todo;
+import com.in28minutes.security.LoggedInUser;
 import com.in28minutes.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
@@ -16,16 +16,20 @@ import javax.validation.Valid;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static com.in28minutes.security.LoggedInUser.getLoggedInUserName;
-
 @Controller
 public class TodoController {
 
-    public TodoService todoService;
+    private TodoService todoService;
+    private LoggedInUser loggedInUser;
 
     @Autowired
     public void setTodoService(TodoService todoService) {
         this.todoService = todoService;
+    }
+
+    @Autowired
+    public void setLoggedInUser(LoggedInUser loggedInUser) {
+        this.loggedInUser = loggedInUser;
     }
 
     /* InitBiner is used when you want to customize the request being sent to the controller */
@@ -43,8 +47,8 @@ public class TodoController {
     @GetMapping(value = "/list-todos")
     public ModelAndView showListTodos() {
         ModelAndView modelAndView = new ModelAndView("list-todos");
-        modelAndView.addObject("name", getLoggedInUserName());
-        modelAndView.addObject("todos", todoService.retrieveTodos(getLoggedInUserName()));
+        modelAndView.addObject("name", loggedInUser.getLoggedInUser().getUsername());
+        modelAndView.addObject("todos", todoService.retrieveTodos(loggedInUser.getLoggedInUser()));
         return modelAndView;
     }
 
@@ -56,12 +60,13 @@ public class TodoController {
     }
 
     @PostMapping(value = "/add-todo")
-    public ModelAndView submitTodo(ModelMap modelMap, @Valid Todo todo, BindingResult result) {
+    public ModelAndView submitTodo(@Valid Todo todo, BindingResult result) {
         // check for validation errors
         if (result.hasErrors()) {
             return new ModelAndView("todo");
         }
-        todoService.addTodo(getLoggedInUserName(), todo.getDesc(), new Date(), false);
+        todo.setUsers(loggedInUser.getLoggedInUser());
+        todoService.addTodo(todo);
         // redirect to list-todos, otherwise you should add the model attributes again
         return new ModelAndView("redirect:list-todos");
     }
@@ -84,7 +89,7 @@ public class TodoController {
         if (result.hasErrors()) {
             return new ModelAndView("todo");
         }
-        todo.setUser(getLoggedInUserName());
+        todo.setUsers(loggedInUser.getLoggedInUser());
         todoService.updateTodo(todo);
         return new ModelAndView("redirect:/list-todos");
     }
