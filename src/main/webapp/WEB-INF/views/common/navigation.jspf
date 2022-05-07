@@ -12,7 +12,7 @@
                     <a class="nav-link" href="/list-todos">List</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/list-todos">Add</a>
+                    <a class="nav-link" href="/add-todo">Add</a>
                 </li>
             </ul>
             <ul class="nav navbar-right">

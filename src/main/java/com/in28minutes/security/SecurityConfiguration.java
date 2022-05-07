@@ -10,10 +10,18 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+/**
+ * The Spring security configuration class. Configures the authentication mechanism and
+ * the access rights for the users.
+ *
+ */
 @Configuration
-@EnableWebSecurity  // we get Spring Security and MVC integration support:
+@EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    /*
+     * Defines the authentication mechanism of the app.
+     */
     @Autowired
     public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
         auth
@@ -23,7 +31,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .roles("USER", "ADMIN");
     }
 
-    // The more specific rules need to come first, followed by the more general ones.
+
+    /*
+     * Defines the rules for the access of the users.
+     * The more specific rules need to come first, followed by the more general ones.
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -37,7 +49,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .and().logout().invalidateHttpSession(true).deleteCookies("JSESSIONID");
     }
 
-    // Starting with Spring 5, we also have to define a password encoder.
+    /**
+     * Initializes and returns the BCryptPasswordEncoder.
+     *
+     * @return
+     *          The password encoder.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

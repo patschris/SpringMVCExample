@@ -5,11 +5,24 @@ import com.in28minutes.entities.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
+/**
+ * The Todo Repository.
+ * Describes all the methods transact with the Todo table in the DB.
+ *
+ * @author Christos Patsouras
+ * @version 1
+ */
 @Repository
-@Transactional      // better implementation is transaction per service
 public interface TodoRepository extends JpaRepository<Todo, Integer> {
+    /**
+     * Retrieves all the Todos of the specified user.
+     *
+     * @param users
+     *          The logged-in user.
+     * @return
+     *      A list containing all the Todos of the specified user.
+     */
     List<Todo> findByUsers(Users users);
 }

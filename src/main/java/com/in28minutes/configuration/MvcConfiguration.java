@@ -8,6 +8,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
+/**
+ * Provides configuration for the Spring MVC model.
+ *
+ *  @author Christos Patsouras
+ *  @version 1
+ */
 @Configuration
 @EnableWebMvc
 public class MvcConfiguration implements WebMvcConfigurer {

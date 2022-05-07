@@ -12,30 +12,64 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The Todo Rest controller. Handles all the requests in "/todos" path.
+ *
+ * @author Christos Patsouras
+ * @version 1
+ */
 @RestController
 @RequestMapping(value = "/todos")
 public class TodoRestController {
-
+    /**
+     * The Todo Service.
+     */
     private TodoService service;
 
+    /**
+     * The logged-in user.
+     */
     private LoggedInUser loggedInUser;
 
+    /**
+     * Setter injection for the Todo Service.
+     *
+     * @param service
+     *          The Todo Service.
+     */
     @Autowired
     public void setService(TodoService service) {
         this.service = service;
     }
 
+    /**
+     * Setter injection for the logged-in user.
+     *
+     * @param loggedInUser
+     *          The logged-in user.
+     */
     @Autowired
-
     public void setLoggedInUser(LoggedInUser loggedInUser) {
         this.loggedInUser = loggedInUser;
     }
 
-    @GetMapping()
+    /**
+     *
+     * @return
+     *          A JSON List with all the todos of the logged-in user.
+     */
+    @GetMapping
     public List<Todo> listAllTodos() {
         return service.retrieveTodos(loggedInUser.getLoggedInUser());
     }
 
+    /**
+     *
+     * @param id
+     *          The id of the Todo to be retrieved as path variable.
+     * @return
+     *          A JSON string with the requested Todo.
+     */
     @GetMapping(value = "/{id}")
     public Optional<Todo> retrieveTodo(@PathVariable("id") int id) {
         return service.retrieveTodo(id);

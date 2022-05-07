@@ -22,7 +22,7 @@ CREATE TABLE public.todo (
                              id bigint DEFAULT nextval('public.todo_id_seq'::regclass) NOT NULL,
                              description character varying(255) NOT NULL,
                              target_date date NOT NULL,
-                             is_done boolean DEFAULT false NOT NULL,
+                             done boolean DEFAULT false NOT NULL,
                              users character varying
 );
 

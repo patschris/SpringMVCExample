@@ -9,12 +9,31 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.servlet.http.HttpServletRequest;
 
-@ControllerAdvice	// for all the controllers in the application
+/**
+ * The exception controller. Is called after an exception raised in a Controller.
+ * Controller Advice means for all the controllers in the application.
+ *
+ * @author Christos Patsouras
+ * @version 1
+ */
+@ControllerAdvice
 @EnableWebMvc
 public class ExceptionController {
-
+	/**
+	 * The logger.
+	 */
 	private final Log logger = LogFactory.getLog(ExceptionController.class);
 
+	/**
+	 * Default exception handler for every exception raised.
+	 *
+	 * @param req
+	 * 			The incoming request.
+	 * @param exception
+	 * 			The exception raised.
+	 * @return
+	 * 			The error page.
+	 */
 	@ExceptionHandler(value = Exception.class)
 	public ModelAndView handleError(HttpServletRequest req, Exception exception) {
 		logger.error("Request: " + req.getRequestURL() + " raised " + exception);
