@@ -36,6 +36,11 @@ public class Users {
     private String password;
 
     /**
+     * Indicates whether the user is enabled to use the app or not.
+     */
+    private String enabled;
+
+    /**
      * The one-to-many relationship with the todo table.
      */
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
@@ -46,6 +51,7 @@ public class Users {
         return "Users{" +
                 "username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", enabled='" + enabled + '\'' +
                 '}';
     }
 }

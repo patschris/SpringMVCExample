@@ -10,25 +10,38 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.sql.DataSource;
+
 /**
  * The Spring security configuration class. Configures the authentication mechanism and
  * the access rights for the users.
- *
  */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+    /**
+     * The DB used.
+     */
+    DataSource dataSource;
+
+    /**
+     * Setter injection for the datasource.
+     *
+     * @param dataSource
+     *          The DB used.
+     */
+    @Autowired
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     /*
      * Defines the authentication mechanism of the app.
      */
     @Autowired
     public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-            .inMemoryAuthentication()
-            .withUser("cpats")
-            .password(passwordEncoder().encode("admin"))
-            .roles("USER", "ADMIN");
+        auth.jdbcAuthentication().dataSource(dataSource);
     }
 
 
@@ -44,7 +57,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             // expose a login page
             .antMatchers("/login").permitAll()
             // any url contains todo must be secured
-            .antMatchers("/", "/*todo*/**").access("hasRole('USER')")
+            .antMatchers("/", "/*todo*/**").hasRole("USER")
             .and().formLogin()
             .and().logout().invalidateHttpSession(true).deleteCookies("JSESSIONID");
     }
