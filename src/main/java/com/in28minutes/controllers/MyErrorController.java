@@ -9,7 +9,6 @@ import org.springframework.web.servlet.ModelAndView;
  * The Error controller. Is used to render error.
  *
  * @author Christos Patsouras
- * @version 1
  */
 @Controller
 public class MyErrorController implements ErrorController {

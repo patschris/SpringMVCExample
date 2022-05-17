@@ -20,7 +20,6 @@ import java.util.Date;
  * The Todo controller. Handles all the requests for the todo, except for the RESTful ones.
  *
  * @author Christos Patsouras
- * @version 1
  */
 @Controller
 public class TodoController {

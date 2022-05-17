@@ -12,7 +12,6 @@ import java.util.List;
  * Describes all the methods transact with the Todo table in the DB.
  *
  * @author Christos Patsouras
- * @version 1
  */
 @Repository
 public interface TodoRepository extends JpaRepository<Todo, Integer> {

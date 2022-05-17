@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
  * Controller Advice means for all the controllers in the application.
  *
  * @author Christos Patsouras
- * @version 1
  */
 @ControllerAdvice
 @EnableWebMvc

@@ -15,6 +15,8 @@ import javax.sql.DataSource;
 /**
  * The Spring security configuration class. Configures the authentication mechanism and
  * the access rights for the users.
+ *
+ * @author Christos Patsouras
  */
 @Configuration
 @EnableWebSecurity

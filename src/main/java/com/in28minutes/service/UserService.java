@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
  * the persistence layer regarding the User.
  *
  * @author Christos Patsouras
- * @version 1
  */
 @Service
 public class UserService {

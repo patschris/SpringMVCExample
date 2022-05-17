@@ -10,7 +10,6 @@ import org.springframework.web.servlet.ModelAndView;
  * The Login controller. Handles the "/" request and returns the welcome page after the login.
  *
  * @author Christos Patsouras
- * @version 1
  */
 @Controller
 public class LoginController {

@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 /**
  * The Logged-in user's class.
+ *
+ * @author Christos Patsouras
  */
 @Component
 public class LoggedInUser {

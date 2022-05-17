@@ -19,7 +19,6 @@ import java.util.Date;
  * The Todo class.
  *
  * @author Christos Patsouras
- * @version 1
  */
 @Getter
 @Setter

@@ -16,7 +16,6 @@ import java.util.Optional;
  * The Todo Rest controller. Handles all the requests in "/todos" path.
  *
  * @author Christos Patsouras
- * @version 1
  */
 @RestController
 @RequestMapping(value = "/todos")

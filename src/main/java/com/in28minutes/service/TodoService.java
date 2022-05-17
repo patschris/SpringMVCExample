@@ -17,7 +17,6 @@ import java.util.Optional;
  * the persistence layer regarding the Todo.
  *
  * @author Christos Patsouras
- * @version 1
  */
 @Service
 public class TodoService {

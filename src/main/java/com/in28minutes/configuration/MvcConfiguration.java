@@ -12,7 +12,6 @@ import org.springframework.web.servlet.view.JstlView;
  * Provides configuration for the Spring MVC model.
  *
  *  @author Christos Patsouras
- *  @version 1
  */
 @Configuration
 @EnableWebMvc

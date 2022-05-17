@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
  * Describes all the methods transact with the User table in the DB.
  *
  * @author Christos Patsouras
- * @version 1
  */
 @Repository
 public interface UserRepository extends JpaRepository<Users, String> {

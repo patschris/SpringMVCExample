@@ -16,7 +16,6 @@ import java.util.List;
  * Defines the credentials of the app's users.
  *
  * @author Christos Patsouras
- * @version 1
  */
 @Getter
 @Setter
@@ -38,7 +37,7 @@ public class Users {
     /**
      * Indicates whether the user is enabled to use the app or not.
      */
-    private String enabled;
+    private Boolean enabled;
 
     /**
      * The one-to-many relationship with the todo table.
