@@ -2,7 +2,6 @@ package com.in28minutes.service;
 
 import com.in28minutes.entities.Users;
 import com.in28minutes.repositories.UserRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
@@ -83,6 +83,6 @@ class UserServiceTest {
     @Test
     void findUserByUsernameException() {
         doThrow(new RuntimeException()).when(userRepository).findUserByUsername(anyString());
-        Assertions.assertThrows(Exception.class, () -> userService.findUserByUsername(username));
+        assertThrows(Exception.class, () -> userService.findUserByUsername(username));
     }
 }

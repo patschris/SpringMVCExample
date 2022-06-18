@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -90,8 +91,8 @@ public class TodoService {
             isolation = Isolation.READ_COMMITTED,
             rollbackFor = Exception.class,
             readOnly = true)
-    public Optional<Todo> retrieveTodo(int id) {
-        return todoRepository.findById(id);
+    public Todo retrieveTodo(int id) {
+        return Optional.of(todoRepository.findById(id)).get().orElse(null);
     }
 
     /**
@@ -105,5 +106,13 @@ public class TodoService {
             rollbackFor = Exception.class)
     public void updateTodo(Todo todo) {
         todoRepository.save(todo);
+    }
+
+    @Transactional( propagation = Propagation.REQUIRED,
+            isolation = Isolation.READ_COMMITTED,
+            rollbackFor = Exception.class,
+            readOnly = true)
+    public Integer getTodoMaxId() {
+        return todoRepository.getMaxId();
     }
 }

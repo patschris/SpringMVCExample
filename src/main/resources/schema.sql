@@ -22,6 +22,8 @@ SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
+SET TIME ZONE 'UTC';
+
 --
 -- TOC entry 212 (class 1259 OID 33160)
 -- Name: authorities; Type: TABLE; Schema: public; Owner: postgres

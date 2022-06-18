@@ -3,8 +3,6 @@ package com.in28minutes.service;
 import com.in28minutes.entities.Todo;
 import com.in28minutes.entities.Users;
 import com.in28minutes.repositories.TodoRepository;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
@@ -12,11 +10,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.*;
+import java.util.Date;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.doNothing;
@@ -62,7 +66,7 @@ public class TodoServiceTest {
      */
     @Test
     public void addTodoNormal() {
-        when(todoRepository.save(ArgumentMatchers.any(Todo.class))).thenReturn(null);
+        when(todoRepository.save(any(Todo.class))).thenReturn(null);
         todoService.addTodo(todo1);
     }
 
@@ -71,8 +75,8 @@ public class TodoServiceTest {
      */
     @Test
     public void addTodoException() {
-        doThrow(new RuntimeException()).when(todoRepository).save(ArgumentMatchers.any(Todo.class));
-        Assertions.assertThrows(Exception.class, () -> todoService.addTodo(todo1));
+        doThrow(new RuntimeException()).when(todoRepository).save(any(Todo.class));
+        assertThrows(Exception.class, () -> todoService.addTodo(todo1));
     }
 
     /**
@@ -89,8 +93,8 @@ public class TodoServiceTest {
      */
     @Test
     public void deleteTodoException() {
-        doThrow(new RuntimeException()).when(todoRepository).deleteById(ArgumentMatchers.any());
-        Assertions.assertThrows(Exception.class, () -> todoService.deleteTodo(0));
+        doThrow(new RuntimeException()).when(todoRepository).deleteById(any());
+        assertThrows(Exception.class, () -> todoService.deleteTodo(0));
     }
 
     /**
@@ -99,7 +103,7 @@ public class TodoServiceTest {
     @Test
     public void retrieveTodosNormal() {
         List<Todo> todos = Arrays.asList(todo1, todo2);
-        when(todoRepository.findByUsers(ArgumentMatchers.any(Users.class))).thenReturn(todos);
+        when(todoRepository.findByUsers(any(Users.class))).thenReturn(todos);
         List<Todo> returnedTodos = todoService.retrieveTodos(users);
         assertEquals(todos, returnedTodos);
     }
@@ -109,7 +113,7 @@ public class TodoServiceTest {
      */
     @Test
     public void retrieveTodosNull() {
-        when(todoRepository.findByUsers(ArgumentMatchers.any(Users.class))).thenReturn(null);
+        when(todoRepository.findByUsers(any(Users.class))).thenReturn(null);
         List<Todo> returnedTodos = todoService.retrieveTodos(users);
         assertNull(returnedTodos);
     }
@@ -119,8 +123,8 @@ public class TodoServiceTest {
      */
     @Test
     public void retrieveTodosException() {
-        doThrow(new RuntimeException()).when(todoRepository).findByUsers(ArgumentMatchers.any(Users.class));
-        Assertions.assertThrows(Exception.class, () ->  todoService.retrieveTodos(users));
+        doThrow(new RuntimeException()).when(todoRepository).findByUsers(any(Users.class));
+        assertThrows(Exception.class, () ->  todoService.retrieveTodos(users));
     }
 
     /**
@@ -129,18 +133,18 @@ public class TodoServiceTest {
     @Test
     public void retrieveTodoNormal() {
         when(todoRepository.findById(anyInt())).thenReturn(Optional.of(todo1));
-        Optional<Todo> returnedTodo = todoService.retrieveTodo(todo1.getId());
-        assertEquals(Optional.of(todo1), returnedTodo);
+        Todo returnedTodo = todoService.retrieveTodo(todo1.getId());
+        assertEquals(todo1, returnedTodo);
     }
 
     /**
      * Test for the retrieveTodo method when an id of a non-existing Todo is given as argument.
      */
     @Test
-    public void retrieveTodoEmpty() {
+    public void retrieveTodoNull() {
         when(todoRepository.findById(anyInt())).thenReturn(Optional.empty());
-        Optional<Todo> returnedTodo = todoService.retrieveTodo(todo1.getId());
-        assertEquals(Optional.empty(), returnedTodo);
+        Todo returnedTodo = todoService.retrieveTodo(todo1.getId());
+        assertNull(returnedTodo);
     }
 
     /**
@@ -149,7 +153,7 @@ public class TodoServiceTest {
     @Test
     public void retrieveTodoException() {
         doThrow(new RuntimeException()).when(todoRepository).findById(anyInt());
-        Assertions.assertThrows(Exception.class, () -> todoService.retrieveTodo(todo1.getId()));
+        assertThrows(Exception.class, () -> todoService.retrieveTodo(todo1.getId()));
     }
 
     /**
@@ -157,7 +161,7 @@ public class TodoServiceTest {
      */
     @Test
     public void updateTodoNormal() {
-        when(todoRepository.save(ArgumentMatchers.any(Todo.class))).thenReturn(null);
+        when(todoRepository.save(any(Todo.class))).thenReturn(null);
         todoService.updateTodo(todo1);
     }
 
@@ -166,7 +170,25 @@ public class TodoServiceTest {
      */
     @Test
     public void updateTodoException() {
-        doThrow(new RuntimeException()).when(todoRepository).save(ArgumentMatchers.any(Todo.class));
-        Assertions.assertThrows(Exception.class, () -> todoService.updateTodo(todo1));
+        doThrow(new RuntimeException()).when(todoRepository).save(any(Todo.class));
+        assertThrows(Exception.class, () -> todoService.updateTodo(todo1));
+    }
+
+    /**
+     * Test for the getTodoMaxId method.
+     */
+    @Test
+    void getTodoMaxIdNormal() {
+        when(todoRepository.getMaxId()).thenReturn(1000);
+        assertEquals(1000, todoService.getTodoMaxId());
+    }
+
+    /**
+     * Test for the getTodoMaxId method when an exception occurs in the method.
+     */
+    @Test
+    void getTodoMaxIdNormalException() {
+        doThrow(new RuntimeException()).when(todoRepository).getMaxId();
+        assertThrows(Exception.class, () -> todoService.getTodoMaxId());
     }
 }

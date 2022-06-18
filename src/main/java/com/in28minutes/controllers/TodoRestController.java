@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * The Todo Rest controller. Handles all the requests in "/todos" path.
@@ -70,7 +69,7 @@ public class TodoRestController {
      *          A JSON string with the requested Todo.
      */
     @GetMapping(value = "/{id}")
-    public Optional<Todo> retrieveTodo(@PathVariable("id") int id) {
+    public Todo retrieveTodo(@PathVariable("id") Integer id) {
         return service.retrieveTodo(id);
     }
 }

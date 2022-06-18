@@ -9,12 +9,18 @@ import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
+
+import static com.in28minutes.configuration.DateFormat.DATE_PATTERN;
 
 /**
  * The Todo controller. Handles all the requests for the todo, except for the RESTful ones.
@@ -62,8 +68,9 @@ public class TodoController {
     @InitBinder
     protected void initBinder(WebDataBinder binder) {
         /* Always use this format for all the dates */
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, false));
+        SimpleDateFormat df = new SimpleDateFormat(DATE_PATTERN);
+        df.setTimeZone(TimeZone.getTimeZone("UTC"));
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(df, false));
 
         /* Trim the strings */
         StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);

@@ -1,5 +1,7 @@
 package com.in28minutes.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +16,11 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.Objects;
+
+import static com.in28minutes.configuration.DateFormat.DATE_PATTERN;
+import static com.in28minutes.configuration.DateFormat.DATE_TIMEZONE;
+import static com.in28minutes.configuration.DateFormat.DATE_FORMAT;
 
 /**
  * The Todo class.
@@ -44,6 +51,7 @@ public class Todo {
     /**
      * The Todo's target completion date.
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern=DATE_PATTERN, timezone = DATE_TIMEZONE)
     private Date targetDate;
 
     /**
@@ -56,6 +64,7 @@ public class Todo {
      */
     @ManyToOne
     @JoinColumn(name = "users")
+    @JsonManagedReference
     private Users users;
 
     /**
@@ -88,12 +97,30 @@ public class Todo {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Todo todo = (Todo) o;
+        return done == todo.done &&
+                id.equals(todo.id) &&
+                description.equals(todo.description) &&
+                targetDate.equals(todo.targetDate) &&
+                users.equals(todo.users);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, description, targetDate, done, users);
+    }
+
+    @Override
     public String toString() {
         String userString = users!=null ? users.toString():"Users{}";
+        String date = targetDate != null ? DATE_FORMAT.format(targetDate) : null;
         return "Todo{" +
                 "id=" + id +
-                ", description='" + description + '\'' +
-                ", targetDate=" + targetDate +
+                ", description='" + description + "'" +
+                ", targetDate=" + date+
                 ", done=" + done +
                 ", users=" + userString +
                 '}';
