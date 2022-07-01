@@ -1,8 +1,10 @@
 package com.in28minutes.controllers;
 
 import com.in28minutes.entities.Todo;
+import com.in28minutes.entities.Users;
 import com.in28minutes.security.LoggedInUser;
 import com.in28minutes.service.TodoService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -10,9 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -38,6 +40,11 @@ public class TodoController {
      * The logged-in user.
      */
     private LoggedInUser loggedInUser;
+
+    /**
+     * The Log4j Logger.
+     */
+    private final Logger log = Logger.getLogger(this.getClass());
 
     /**
      * Setter injection for the Todo Service.
@@ -83,11 +90,13 @@ public class TodoController {
      * @return
      *          A list of all todos for the logged-in user.
      */
-    @GetMapping(value = "/list-todos")
+    @GetMapping("/list-todos")
     public ModelAndView showListTodos() {
         ModelAndView modelAndView = new ModelAndView("list-todos");
         modelAndView.addObject("name", loggedInUser.getLoggedInUser().getUsername());
         modelAndView.addObject("todos", todoService.retrieveTodos(loggedInUser.getLoggedInUser()));
+        log.info("showListTodos() - Get request at /list-todos for " + modelAndView.getModel().get("name") + " returned " +
+                    modelAndView.getModel().get("todos").toString());
         return modelAndView;
     }
 
@@ -97,11 +106,13 @@ public class TodoController {
      * @return
      *          The empty form to add a new Todo.
      */
-    @GetMapping(value = "/add-todo")
+    @GetMapping( "/add-todo")
     public ModelAndView addTodo() {
+        Users user = loggedInUser.getLoggedInUser();
         ModelAndView modelAndView = new ModelAndView("todo");
         /* In order to use spring mvc tags */
-        modelAndView.addObject("todo", new Todo(loggedInUser.getLoggedInUser()));
+        modelAndView.addObject("todo", new Todo(user));
+        log.info("addTodo() - Get request at /add-todo for " + user.getUsername());
         return modelAndView;
     }
 
@@ -116,14 +127,17 @@ public class TodoController {
      *          A Todo list that contains the newly created Todo, if the validations are successful, otherwise the todo
      *          page containing the validation errors.
      */
-    @PostMapping(value = "/add-todo")
+    @PostMapping("/add-todo")
     public ModelAndView submitTodo(@Valid Todo todo, BindingResult result) {
         /* Check for validation errors */
         if (result.hasErrors()) {
             return new ModelAndView("todo");
         }
-        todo.setUsers(loggedInUser.getLoggedInUser());
+        Users user = loggedInUser.getLoggedInUser();
+        todo.setUsers(user);
         todoService.addTodo(todo);
+        log.info("submitTodo() - Post request at /add-todo for " + user.getUsername() + " added " + todo);
+        log.info("submitTodo() - Redirecting " + user.getUsername() + " to /list-todos");
         /* Redirect to list-todos, otherwise you should add the model attributes again */
         return new ModelAndView("redirect:list-todos");
     }
@@ -136,9 +150,13 @@ public class TodoController {
      * @return
      *          A Todo list that doesn't contain the deleted Todo.
      */
-    @GetMapping(value = "/delete-todo/{id}")
+    @GetMapping("/delete-todo/{id}")
     public ModelAndView deleteToDo (@PathVariable int id) {
+        String username = loggedInUser.getLoggedInUser().getUsername();
+        log.info("deleteToDo() - Get request to /delete-todo/" + id + " for user " + username);
         todoService.deleteTodo(id);
+        log.info("deleteToDo() - Todo with id " + id + " has been deleted for user " + username);
+        log.info("deleteToDo() - Redirecting " + username + " to /list-todos");
         return new ModelAndView("redirect:/list-todos"); //note the slash
     }
 
@@ -150,10 +168,12 @@ public class TodoController {
      * @return
      *          The details of the Todo to be updated.
      */
-    @GetMapping(value = "/update-todo/{id}")
+    @GetMapping("/update-todo/{id}")
     public ModelAndView updateToDoGet (@PathVariable int id) {
         ModelAndView modelAndView = new ModelAndView("todo");
         modelAndView.addObject("todo", todoService.retrieveTodo(id));
+        log.info("updateToDoGet() - Get request at /update-todo/" + id + " for " +
+                loggedInUser.getLoggedInUser().getUsername() + " returned " + modelAndView.getModel().get("todo"));
         return modelAndView;
     }
 
@@ -167,13 +187,16 @@ public class TodoController {
      * @return
      *          A Todo list that contains the updated Todo.
      */
-    @PostMapping(value = "/update-todo/{id}")
-    public ModelAndView updateToDoPost (@Valid Todo todo, BindingResult result) {
+    @PostMapping("/update-todo/{id}")
+    public ModelAndView updateToDoPost (@PathVariable int id, @Valid Todo todo, BindingResult result) {
         if (result.hasErrors()) {
             return new ModelAndView("todo");
         }
-        todo.setUsers(loggedInUser.getLoggedInUser());
+        Users user = loggedInUser.getLoggedInUser();
+        todo.setUsers(user);
         todoService.updateTodo(todo);
+        log.info("updateToDoPost() - Post request at /update-todo/" + id + " for " + user.getUsername() + " updated " + todo);
+        log.info("updateToDoPost() - Redirecting " + user.getUsername() + " to /list-todos");
         return new ModelAndView("redirect:/list-todos");
     }
 }

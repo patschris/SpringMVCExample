@@ -1,8 +1,10 @@
 package com.in28minutes.controllers;
 
 import com.in28minutes.entities.Todo;
+import com.in28minutes.entities.Users;
 import com.in28minutes.security.LoggedInUser;
 import com.in28minutes.service.TodoService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +30,11 @@ public class TodoRestController {
      * The logged-in user.
      */
     private LoggedInUser loggedInUser;
+
+    /**
+     * The Log4j Logger.
+     */
+    private final Logger log = Logger.getLogger(this.getClass());
 
     /**
      * Setter injection for the Todo Service.
@@ -58,7 +65,10 @@ public class TodoRestController {
      */
     @GetMapping
     public List<Todo> listAllTodos() {
-        return service.retrieveTodos(loggedInUser.getLoggedInUser());
+        Users user = loggedInUser.getLoggedInUser();
+        List<Todo> todos = service.retrieveTodos(user);
+        log.info("listAllTodos() - Get request at /todos for " + user.getUsername() + " returned " + todos.toString());
+        return todos;
     }
 
     /**
@@ -70,6 +80,9 @@ public class TodoRestController {
      */
     @GetMapping(value = "/{id}")
     public Todo retrieveTodo(@PathVariable("id") Integer id) {
-        return service.retrieveTodo(id);
+        Todo todo = service.retrieveTodo(id);
+        log.info("retrieveTodo() - request at /todos/" + id + " for " + loggedInUser.getLoggedInUser().getUsername() +
+                " returned " + todo);
+        return todo;
     }
 }

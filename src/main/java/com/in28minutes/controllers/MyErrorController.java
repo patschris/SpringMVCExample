@@ -2,7 +2,7 @@ package com.in28minutes.controllers;
 
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -29,7 +29,7 @@ public class MyErrorController implements ErrorController {
      * @return
      *          The error page.
      */
-    @RequestMapping("/error")
+    @GetMapping("/error")
     public ModelAndView handleError() {
         return new ModelAndView(getErrorPath());
     }

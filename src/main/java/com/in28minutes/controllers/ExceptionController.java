@@ -1,13 +1,15 @@
 package com.in28minutes.controllers;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 
 /**
  * The exception controller. Is called after an exception raised in a Controller.
@@ -19,9 +21,9 @@ import javax.servlet.http.HttpServletRequest;
 @EnableWebMvc
 public class ExceptionController {
 	/**
-	 * The logger.
+	 * The Log4j Logger.
 	 */
-	private final Log logger = LogFactory.getLog(ExceptionController.class);
+	private final Logger log = Logger.getLogger(this.getClass());
 
 	/**
 	 * Default exception handler for every exception raised.
@@ -35,7 +37,10 @@ public class ExceptionController {
 	 */
 	@ExceptionHandler(value = Exception.class)
 	public ModelAndView handleError(HttpServletRequest req, Exception exception) {
-		logger.error("Request: " + req.getRequestURL() + " raised " + exception);
+		Writer buffer = new StringWriter();
+		PrintWriter pw = new PrintWriter(buffer);
+		exception.printStackTrace(pw);
+		log.error("handleError() - Request: " + req.getRequestURL() + " raised an exception: " + exception.getMessage() + ".\n" + buffer);
 		return new ModelAndView("error");
 	}
 }

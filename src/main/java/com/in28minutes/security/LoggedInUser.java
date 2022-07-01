@@ -2,6 +2,7 @@ package com.in28minutes.security;
 
 import com.in28minutes.entities.Users;
 import com.in28minutes.service.UserService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +19,11 @@ public class LoggedInUser {
      * The User Service.
      */
     private UserService userService;
+
+    /**
+     * The Log4j Logger.
+     */
+    private final Logger log = Logger.getLogger(this.getClass());
 
     /**
      * Setter injection for the User Service.
@@ -38,8 +44,10 @@ public class LoggedInUser {
      */
     public Users getLoggedInUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return principal instanceof UserDetails ?
+        Users users = principal instanceof UserDetails ?
                     userService.findUserByUsername(((UserDetails) principal).getUsername()):
                     null;
+        log.info("getLoggedInUser() - Logged in user is " + users);
+        return users;
     }
 }

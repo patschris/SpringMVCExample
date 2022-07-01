@@ -1,6 +1,7 @@
 package com.in28minutes.controllers;
 
 import com.in28minutes.security.LoggedInUser;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,11 @@ public class LoginController {
     private LoggedInUser loggedInUser;
 
     /**
+     * The Log4j Logger.
+     */
+    private final Logger log = Logger.getLogger(this.getClass());
+
+    /**
      * Setter injection for the logged-in user.
      *
      * @param loggedInUser
@@ -35,10 +41,11 @@ public class LoginController {
      * @return
      *          The welcome page.
      */
-    @GetMapping(value = "/")
+    @GetMapping("/")
     public ModelAndView showLoginPage() {
         ModelAndView modelAndView = new ModelAndView("welcome");
         modelAndView.addObject("name", loggedInUser.getLoggedInUser().getUsername());
+        log.info("showLoginPage() - Successful login for " + modelAndView.getModel().get("name"));
         return modelAndView;
     }
 }

@@ -3,6 +3,7 @@ package com.in28minutes.service;
 import com.in28minutes.entities.Todo;
 import com.in28minutes.entities.Users;
 import com.in28minutes.repositories.TodoRepository;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,11 @@ public class TodoService {
     TodoRepository todoRepository;
 
     /**
+     * The Log4j Logger.
+     */
+    private final Logger log = Logger.getLogger(this.getClass());
+
+    /**
      * Setter injection for the Todo Repository.
      *
      * @param todoRepository
@@ -47,7 +53,8 @@ public class TodoService {
                     isolation = Isolation.READ_COMMITTED,
                     rollbackFor = Exception.class)
     public void addTodo(Todo todo) {
-        todoRepository.save(todo);
+        Todo savedTodo = todoRepository.save(todo);
+        log.info(savedTodo + " has been saved");
     }
 
     /**
@@ -61,6 +68,7 @@ public class TodoService {
             rollbackFor = Exception.class)
     public void deleteTodo(int id) {
         todoRepository.deleteById(id);
+        log.info("deleteTodo() - Todo with id=" + id + " has been deleted");
     }
 
     /**
@@ -76,7 +84,9 @@ public class TodoService {
             rollbackFor = Exception.class,
             readOnly = true)
     public List<Todo> retrieveTodos(Users users) {
-        return todoRepository.findByUsers(users);
+        List<Todo> todoList = todoRepository.findByUsers(users);
+        log.info("retrieveTodos() - For user " + users.getUsername() + " retrieved : " + todoList.toString());
+        return todoList;
     }
 
     /**
@@ -92,7 +102,9 @@ public class TodoService {
             rollbackFor = Exception.class,
             readOnly = true)
     public Todo retrieveTodo(int id) {
-        return Optional.of(todoRepository.findById(id)).get().orElse(null);
+        Todo todo = Optional.of(todoRepository.findById(id)).get().orElse(null);
+        log.info("retrieveTodo() - For id=" + id + " retrieved : " + todo);
+        return todo;
     }
 
     /**
@@ -105,14 +117,23 @@ public class TodoService {
             isolation = Isolation.READ_COMMITTED,
             rollbackFor = Exception.class)
     public void updateTodo(Todo todo) {
-        todoRepository.save(todo);
+        Todo updatedTodo = todoRepository.save(todo);
+        log.info("updateTodo() - " + updatedTodo + " has been updated");
     }
 
+    /**
+     * Retrieves the maximum id of the Todo table.
+     *
+     * @return
+     *      The maximum id in the Todo table.
+     */
     @Transactional( propagation = Propagation.REQUIRED,
             isolation = Isolation.READ_COMMITTED,
             rollbackFor = Exception.class,
             readOnly = true)
     public Integer getTodoMaxId() {
-        return todoRepository.getMaxId();
+        Integer maxId = todoRepository.getMaxId();
+        log.info("getTodoMaxId() - Max id of the Todo table is " + maxId);
+        return maxId;
     }
 }
