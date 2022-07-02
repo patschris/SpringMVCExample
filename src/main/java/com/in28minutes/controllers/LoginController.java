@@ -20,9 +20,9 @@ public class LoginController {
     private LoggedInUser loggedInUser;
 
     /**
-     * The Log4j Logger.
+     * The debug logger.
      */
-    private final Logger log = Logger.getLogger(this.getClass());
+    private final Logger log = Logger.getLogger("debugLog");
 
     /**
      * Setter injection for the logged-in user.
@@ -45,7 +45,8 @@ public class LoginController {
     public ModelAndView showLoginPage() {
         ModelAndView modelAndView = new ModelAndView("welcome");
         modelAndView.addObject("name", loggedInUser.getLoggedInUser().getUsername());
-        log.info("showLoginPage() - Successful login for " + modelAndView.getModel().get("name"));
+        log.info(getClass().getName() + "." + new Object(){}.getClass().getEnclosingMethod().getName() +
+                "- Successful login for " + modelAndView.getModel().get("name"));
         return modelAndView;
     }
 }

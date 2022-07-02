@@ -28,9 +28,14 @@ public class TodoService {
     TodoRepository todoRepository;
 
     /**
-     * The Log4j Logger.
+     * The debug logger.
      */
-    private final Logger log = Logger.getLogger(this.getClass());
+    private final Logger log = Logger.getLogger("debugLog");
+
+    /**
+     * The class name.
+     */
+    private final String className = getClass().getName();
 
     /**
      * Setter injection for the Todo Repository.
@@ -54,7 +59,7 @@ public class TodoService {
                     rollbackFor = Exception.class)
     public void addTodo(Todo todo) {
         Todo savedTodo = todoRepository.save(todo);
-        log.info(savedTodo + " has been saved");
+        log.info(className + "." + new Object(){}.getClass().getEnclosingMethod().getName() + " - " + savedTodo + " has been saved");
     }
 
     /**
@@ -68,7 +73,8 @@ public class TodoService {
             rollbackFor = Exception.class)
     public void deleteTodo(int id) {
         todoRepository.deleteById(id);
-        log.info("deleteTodo() - Todo with id=" + id + " has been deleted");
+        log.info(className + "." + new Object(){}.getClass().getEnclosingMethod().getName() +
+                " - Todo with id=" + id + " has been deleted");
     }
 
     /**
@@ -85,7 +91,8 @@ public class TodoService {
             readOnly = true)
     public List<Todo> retrieveTodos(Users users) {
         List<Todo> todoList = todoRepository.findByUsers(users);
-        log.info("retrieveTodos() - For user " + users.getUsername() + " retrieved : " + todoList.toString());
+        log.info(className + "." + new Object(){}.getClass().getEnclosingMethod().getName() +
+                " - For user " + users.getUsername() + " retrieved : " + todoList.toString());
         return todoList;
     }
 
@@ -103,7 +110,8 @@ public class TodoService {
             readOnly = true)
     public Todo retrieveTodo(int id) {
         Todo todo = Optional.of(todoRepository.findById(id)).get().orElse(null);
-        log.info("retrieveTodo() - For id=" + id + " retrieved : " + todo);
+        log.info(className + "." + new Object(){}.getClass().getEnclosingMethod().getName() +
+                " - For id=" + id + " retrieved : " + todo);
         return todo;
     }
 
@@ -118,7 +126,8 @@ public class TodoService {
             rollbackFor = Exception.class)
     public void updateTodo(Todo todo) {
         Todo updatedTodo = todoRepository.save(todo);
-        log.info("updateTodo() - " + updatedTodo + " has been updated");
+        log.info(className + "." + new Object(){}.getClass().getEnclosingMethod().getName() +
+                " - " + updatedTodo + " has been updated");
     }
 
     /**
@@ -133,7 +142,8 @@ public class TodoService {
             readOnly = true)
     public Integer getTodoMaxId() {
         Integer maxId = todoRepository.getMaxId();
-        log.info("getTodoMaxId() - Max id of the Todo table is " + maxId);
+        log.info(className + "." + new Object(){}.getClass().getEnclosingMethod().getName() +
+                " - Max id of the Todo table is " + maxId);
         return maxId;
     }
 }

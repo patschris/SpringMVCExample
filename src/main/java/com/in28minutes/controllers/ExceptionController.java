@@ -21,9 +21,9 @@ import java.io.Writer;
 @EnableWebMvc
 public class ExceptionController {
 	/**
-	 * The Log4j Logger.
+	 * The debug logger.
 	 */
-	private final Logger log = Logger.getLogger(this.getClass());
+	private final Logger log = Logger.getLogger("debugLog");
 
 	/**
 	 * Default exception handler for every exception raised.
@@ -40,7 +40,8 @@ public class ExceptionController {
 		Writer buffer = new StringWriter();
 		PrintWriter pw = new PrintWriter(buffer);
 		exception.printStackTrace(pw);
-		log.error("handleError() - Request: " + req.getRequestURL() + " raised an exception: " + exception.getMessage() + ".\n" + buffer);
+		log.error("Request: " + req.getRequestURL() + " raised an exception: "
+				+ exception.getMessage() + ".\n" + buffer);
 		return new ModelAndView("error");
 	}
 }

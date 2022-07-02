@@ -20,9 +20,9 @@ public class UserService {
     UserRepository userRepository;
 
     /**
-     * The Log4j Logger.
+     * The debug logger.
      */
-    private final Logger log = Logger.getLogger(this.getClass());
+    private final Logger log = Logger.getLogger("debugLog");
 
     /**
      * Setter injection for the User Repository.
@@ -45,7 +45,8 @@ public class UserService {
      */
     public Users findUserByUsername (String username) {
         Users user = userRepository.findUserByUsername(username);
-        log.info("findUserByUsername() - For " + username + " returned " + user);
+        log.info(getClass().getName() + "." + new Object(){}.getClass().getEnclosingMethod().getName() +
+                " - For " + username + " returned " + user);
         return user;
     }
 }

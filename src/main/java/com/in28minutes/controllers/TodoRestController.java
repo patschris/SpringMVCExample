@@ -32,9 +32,14 @@ public class TodoRestController {
     private LoggedInUser loggedInUser;
 
     /**
-     * The Log4j Logger.
+     * The debug logger.
      */
-    private final Logger log = Logger.getLogger(this.getClass());
+    private final Logger log = Logger.getLogger("debugLog");
+
+    /**
+     * The class name.
+     */
+    private final String className = getClass().getName();
 
     /**
      * Setter injection for the Todo Service.
@@ -67,7 +72,8 @@ public class TodoRestController {
     public List<Todo> listAllTodos() {
         Users user = loggedInUser.getLoggedInUser();
         List<Todo> todos = service.retrieveTodos(user);
-        log.info("listAllTodos() - Get request at /todos for " + user.getUsername() + " returned " + todos.toString());
+        log.info(className + "." + new Object(){}.getClass().getEnclosingMethod().getName() +
+                " - Get request at /todos for " + user.getUsername() + " returned " + todos.toString());
         return todos;
     }
 
@@ -81,7 +87,8 @@ public class TodoRestController {
     @GetMapping(value = "/{id}")
     public Todo retrieveTodo(@PathVariable("id") Integer id) {
         Todo todo = service.retrieveTodo(id);
-        log.info("retrieveTodo() - request at /todos/" + id + " for " + loggedInUser.getLoggedInUser().getUsername() +
+        log.info(className + "." + new Object(){}.getClass().getEnclosingMethod().getName() +
+                " - request at /todos/" + id + " for " + loggedInUser.getLoggedInUser().getUsername() +
                 " returned " + todo);
         return todo;
     }

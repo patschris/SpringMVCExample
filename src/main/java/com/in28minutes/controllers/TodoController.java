@@ -42,9 +42,14 @@ public class TodoController {
     private LoggedInUser loggedInUser;
 
     /**
-     * The Log4j Logger.
+     * The debug logger.
      */
-    private final Logger log = Logger.getLogger(this.getClass());
+    private final Logger log = Logger.getLogger("debugLog");
+
+    /**
+     * The class name.
+     */
+    private final String className = getClass().getName();
 
     /**
      * Setter injection for the Todo Service.
@@ -95,7 +100,8 @@ public class TodoController {
         ModelAndView modelAndView = new ModelAndView("list-todos");
         modelAndView.addObject("name", loggedInUser.getLoggedInUser().getUsername());
         modelAndView.addObject("todos", todoService.retrieveTodos(loggedInUser.getLoggedInUser()));
-        log.info("showListTodos() - Get request at /list-todos for " + modelAndView.getModel().get("name") + " returned " +
+        log.info(className + "." + new Object(){}.getClass().getEnclosingMethod().getName() +
+                " - Get request at /list-todos for " + modelAndView.getModel().get("name") + " returned " +
                     modelAndView.getModel().get("todos").toString());
         return modelAndView;
     }
@@ -112,7 +118,8 @@ public class TodoController {
         ModelAndView modelAndView = new ModelAndView("todo");
         /* In order to use spring mvc tags */
         modelAndView.addObject("todo", new Todo(user));
-        log.info("addTodo() - Get request at /add-todo for " + user.getUsername());
+        log.info(className + "." + new Object(){}.getClass().getEnclosingMethod().getName() +
+                " - Get request at /add-todo for " + user.getUsername());
         return modelAndView;
     }
 
@@ -136,8 +143,10 @@ public class TodoController {
         Users user = loggedInUser.getLoggedInUser();
         todo.setUsers(user);
         todoService.addTodo(todo);
-        log.info("submitTodo() - Post request at /add-todo for " + user.getUsername() + " added " + todo);
-        log.info("submitTodo() - Redirecting " + user.getUsername() + " to /list-todos");
+        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        log.info(className + "." + methodName +
+                " - Post request at /add-todo for " + user.getUsername() + " added " + todo);
+        log.info(className + "." + methodName + " - Redirecting " + user.getUsername() + " to /list-todos");
         /* Redirect to list-todos, otherwise you should add the model attributes again */
         return new ModelAndView("redirect:list-todos");
     }
@@ -153,10 +162,11 @@ public class TodoController {
     @GetMapping("/delete-todo/{id}")
     public ModelAndView deleteToDo (@PathVariable int id) {
         String username = loggedInUser.getLoggedInUser().getUsername();
-        log.info("deleteToDo() - Get request to /delete-todo/" + id + " for user " + username);
+        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        log.info(className + "." + methodName + " - Get request to /delete-todo/" + id + " for user " + username);
         todoService.deleteTodo(id);
-        log.info("deleteToDo() - Todo with id " + id + " has been deleted for user " + username);
-        log.info("deleteToDo() - Redirecting " + username + " to /list-todos");
+        log.info(className + "." + methodName + " - Todo with id " + id + " has been deleted for user " + username);
+        log.info(className + "." + methodName + " - Redirecting " + username + " to /list-todos");
         return new ModelAndView("redirect:/list-todos"); //note the slash
     }
 
@@ -172,7 +182,8 @@ public class TodoController {
     public ModelAndView updateToDoGet (@PathVariable int id) {
         ModelAndView modelAndView = new ModelAndView("todo");
         modelAndView.addObject("todo", todoService.retrieveTodo(id));
-        log.info("updateToDoGet() - Get request at /update-todo/" + id + " for " +
+        log.info(className + "." + new Object(){}.getClass().getEnclosingMethod().getName() +
+                " - Get request at /update-todo/" + id + " for " +
                 loggedInUser.getLoggedInUser().getUsername() + " returned " + modelAndView.getModel().get("todo"));
         return modelAndView;
     }
@@ -195,8 +206,10 @@ public class TodoController {
         Users user = loggedInUser.getLoggedInUser();
         todo.setUsers(user);
         todoService.updateTodo(todo);
-        log.info("updateToDoPost() - Post request at /update-todo/" + id + " for " + user.getUsername() + " updated " + todo);
-        log.info("updateToDoPost() - Redirecting " + user.getUsername() + " to /list-todos");
+        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        log.info(className + "." + methodName +
+                " - Post request at /update-todo/" + id + " for " + user.getUsername() + " updated " + todo);
+        log.info(className + "." + methodName + " - Redirecting " + user.getUsername() + " to /list-todos");
         return new ModelAndView("redirect:/list-todos");
     }
 }
