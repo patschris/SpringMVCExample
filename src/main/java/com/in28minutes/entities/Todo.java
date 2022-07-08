@@ -115,7 +115,7 @@ public class Todo {
 
     @Override
     public String toString() {
-        String userString = users!=null ? users.toString():"Users{}";
+        String userString = users!=null ? users.toString() : "Users{}";
         String date = targetDate != null ? DATE_FORMAT.format(targetDate) : null;
         return "Todo{" +
                 "id=" + id +

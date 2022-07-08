@@ -1,4 +1,4 @@
-package com.in28minutes.security;
+package com.in28minutes.service;
 
 import com.in28minutes.entities.Users;
 import org.junit.jupiter.api.Test;
@@ -19,13 +19,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestPropertySource(locations= "/test.properties")
-class LoggedInUserTest {
+class LoggedInUserServiceTest {
 
     /**
-     * Field injection for the logged-in user.
+     * Field injection for the logged-in user service.
      */
     @Autowired
-    private LoggedInUser loggedInUser;
+    private LoggedInUserService loggedInUserService;
 
     /**
      * Test for the getLoggedInUser method using mock user.
@@ -33,7 +33,7 @@ class LoggedInUserTest {
     @Test
     @WithMockUser(value = "cpats", roles = {"ADMIN", "USER"})
     void getLoggedInUser() {
-        Users users = loggedInUser.getLoggedInUser();
+        Users users = loggedInUserService.getLoggedInUser();
         assertEquals("cpats", users.getUsername());
         assertTrue(users.getEnabled());
     }

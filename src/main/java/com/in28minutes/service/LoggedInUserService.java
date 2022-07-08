@@ -1,4 +1,4 @@
-package com.in28minutes.security;
+package com.in28minutes.service;
 
 import com.in28minutes.entities.Users;
 import com.in28minutes.service.UserService;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  * @author Christos Patsouras
  */
 @Component
-public class LoggedInUser {
+public class LoggedInUserService {
     /**
      * The User Service.
      */

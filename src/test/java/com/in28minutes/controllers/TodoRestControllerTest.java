@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.in28minutes.entities.Todo;
 import com.in28minutes.entities.Users;
-import com.in28minutes.security.LoggedInUser;
+import com.in28minutes.service.LoggedInUserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,7 +51,7 @@ class TodoRestControllerTest {
      * Field injection for the logged-in user.
      */
     @Autowired
-    private LoggedInUser loggedInUser;
+    private LoggedInUserService loggedInUserService;
 
     /**
      * An array contains four todos for testing purpose.
@@ -63,7 +63,7 @@ class TodoRestControllerTest {
      */
     @BeforeEach
     public void before() throws ParseException {
-        Users users = loggedInUser.getLoggedInUser();
+        Users users = loggedInUserService.getLoggedInUser();
         todos[0] = new Todo(1, "Buy a new car", DATE_FORMAT.parse("26/08/2022"), false, users);
         todos[1] = new Todo(2, "Find a Job", DATE_FORMAT.parse("22/12/2021"), true, users);
         todos[2] = new Todo(3, "Learn Jasper", DATE_FORMAT.parse("21/09/2022"), false, users);

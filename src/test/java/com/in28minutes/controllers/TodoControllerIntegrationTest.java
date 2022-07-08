@@ -11,6 +11,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
+
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.hasProperty;
@@ -67,7 +69,7 @@ class TodoControllerIntegrationTest {
 
     /**
      * Performs a get request to the "/list-todos" path with a mock user.
-     * Expects to be forwarded to the error page because of the invalid user.
+     * Expects to be forwarded to the list-todos page without todos because of the invalid user.
      *
      * @throws Exception
      *          mockMvc.perform may throw Exception
@@ -79,8 +81,11 @@ class TodoControllerIntegrationTest {
                 .perform(get("/list-todos"))
                 .andExpect(status().isOk())
                 .andExpect(model().hasNoErrors())
-                .andExpect(forwardedUrl("/WEB-INF/views/error.jsp"))
-                .andExpect(view().name("error"));
+                .andExpect(model().attributeExists("todos"))
+                .andExpect(model().attribute("name", "no-one"))
+                .andExpect(model().attribute("todos", new ArrayList<>()))
+                .andExpect(forwardedUrl("/WEB-INF/views/list-todos.jsp"))
+                .andExpect(view().name("list-todos"));
     }
 
     /**

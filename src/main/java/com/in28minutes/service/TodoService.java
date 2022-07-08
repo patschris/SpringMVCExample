@@ -91,8 +91,9 @@ public class TodoService {
             readOnly = true)
     public List<Todo> retrieveTodos(Users users) {
         List<Todo> todoList = todoRepository.findByUsers(users);
+        String username = users != null ? users.getUsername() : "";
         log.info(className + "." + new Object(){}.getClass().getEnclosingMethod().getName() +
-                " - For user " + users.getUsername() + " retrieved : " + todoList.toString());
+                " - For user " + username  + " retrieved : " + todoList);
         return todoList;
     }
 

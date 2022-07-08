@@ -2,7 +2,7 @@ package com.in28minutes.controllers;
 
 import com.in28minutes.entities.Todo;
 import com.in28minutes.entities.Users;
-import com.in28minutes.security.LoggedInUser;
+import com.in28minutes.service.LoggedInUserService;
 import com.in28minutes.service.TodoService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +27,9 @@ public class TodoRestController {
     private TodoService service;
 
     /**
-     * The logged-in user.
+     * The logged-in user service.
      */
-    private LoggedInUser loggedInUser;
+    private LoggedInUserService loggedInUserService;
 
     /**
      * The debug logger.
@@ -53,14 +53,14 @@ public class TodoRestController {
     }
 
     /**
-     * Setter injection for the logged-in user.
+     * Setter injection for the logged-in user service.
      *
-     * @param loggedInUser
-     *          The logged-in user.
+     * @param loggedInUserService
+     *          The logged-in user service.
      */
     @Autowired
-    public void setLoggedInUser(LoggedInUser loggedInUser) {
-        this.loggedInUser = loggedInUser;
+    public void setLoggedInUser(LoggedInUserService loggedInUserService) {
+        this.loggedInUserService = loggedInUserService;
     }
 
     /**
@@ -70,10 +70,10 @@ public class TodoRestController {
      */
     @GetMapping
     public List<Todo> listAllTodos() {
-        Users user = loggedInUser.getLoggedInUser();
+        Users user = loggedInUserService.getLoggedInUser();
         List<Todo> todos = service.retrieveTodos(user);
         log.info(className + "." + new Object(){}.getClass().getEnclosingMethod().getName() +
-                " - Get request at /todos for " + user.getUsername() + " returned " + todos.toString());
+                " - Get request at /todos for " + user.getUsername() + " returned " + todos);
         return todos;
     }
 
@@ -88,7 +88,7 @@ public class TodoRestController {
     public Todo retrieveTodo(@PathVariable("id") Integer id) {
         Todo todo = service.retrieveTodo(id);
         log.info(className + "." + new Object(){}.getClass().getEnclosingMethod().getName() +
-                " - request at /todos/" + id + " for " + loggedInUser.getLoggedInUser().getUsername() +
+                " - request at /todos/" + id + " for " + loggedInUserService.getLoggedInUser().getUsername() +
                 " returned " + todo);
         return todo;
     }

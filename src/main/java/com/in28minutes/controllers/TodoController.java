@@ -2,7 +2,7 @@ package com.in28minutes.controllers;
 
 import com.in28minutes.entities.Todo;
 import com.in28minutes.entities.Users;
-import com.in28minutes.security.LoggedInUser;
+import com.in28minutes.service.LoggedInUserService;
 import com.in28minutes.service.TodoService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -37,9 +38,9 @@ public class TodoController {
     private TodoService todoService;
 
     /**
-     * The logged-in user.
+     * The logged-in user service.
      */
-    private LoggedInUser loggedInUser;
+    private LoggedInUserService loggedInUserService;
 
     /**
      * The debug logger.
@@ -65,12 +66,12 @@ public class TodoController {
     /**
      * Setter injection for the logged-in user.
      *
-     * @param loggedInUser
-     *          The logged-in user.
+     * @param loggedInUserService
+     *          The logged-in user service.
      */
     @Autowired
-    public void setLoggedInUser(LoggedInUser loggedInUser) {
-        this.loggedInUser = loggedInUser;
+    public void setLoggedInUser(LoggedInUserService loggedInUserService) {
+        this.loggedInUserService = loggedInUserService;
     }
 
     /**
@@ -96,13 +97,13 @@ public class TodoController {
      *          A list of all todos for the logged-in user.
      */
     @GetMapping("/list-todos")
-    public ModelAndView showListTodos() {
+    public ModelAndView showListTodos(HttpServletRequest request) {
         ModelAndView modelAndView = new ModelAndView("list-todos");
-        modelAndView.addObject("name", loggedInUser.getLoggedInUser().getUsername());
-        modelAndView.addObject("todos", todoService.retrieveTodos(loggedInUser.getLoggedInUser()));
+        modelAndView.addObject("name", request.getRemoteUser());
+        modelAndView.addObject("todos", todoService.retrieveTodos(loggedInUserService.getLoggedInUser()));
         log.info(className + "." + new Object(){}.getClass().getEnclosingMethod().getName() +
-                " - Get request at /list-todos for " + modelAndView.getModel().get("name") + " returned " +
-                    modelAndView.getModel().get("todos").toString());
+                " - Get request at /list-todos for " + request.getRemoteUser() + " returned " +
+                    modelAndView.getModel().get("todos"));
         return modelAndView;
     }
 
@@ -113,13 +114,12 @@ public class TodoController {
      *          The empty form to add a new Todo.
      */
     @GetMapping( "/add-todo")
-    public ModelAndView addTodo() {
-        Users user = loggedInUser.getLoggedInUser();
+    public ModelAndView addTodo(HttpServletRequest request) {
         ModelAndView modelAndView = new ModelAndView("todo");
         /* In order to use spring mvc tags */
-        modelAndView.addObject("todo", new Todo(user));
+        modelAndView.addObject("todo", new Todo(loggedInUserService.getLoggedInUser()));
         log.info(className + "." + new Object(){}.getClass().getEnclosingMethod().getName() +
-                " - Get request at /add-todo for " + user.getUsername());
+                " - Get request at /add-todo for " + request.getRemoteUser());
         return modelAndView;
     }
 
@@ -135,18 +135,18 @@ public class TodoController {
      *          page containing the validation errors.
      */
     @PostMapping("/add-todo")
-    public ModelAndView submitTodo(@Valid Todo todo, BindingResult result) {
+    public ModelAndView submitTodo(HttpServletRequest request, @Valid Todo todo, BindingResult result) {
         /* Check for validation errors */
         if (result.hasErrors()) {
             return new ModelAndView("todo");
         }
-        Users user = loggedInUser.getLoggedInUser();
+        Users user = loggedInUserService.getLoggedInUser();
         todo.setUsers(user);
         todoService.addTodo(todo);
         String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
         log.info(className + "." + methodName +
-                " - Post request at /add-todo for " + user.getUsername() + " added " + todo);
-        log.info(className + "." + methodName + " - Redirecting " + user.getUsername() + " to /list-todos");
+                " - Post request at /add-todo for " + request.getRemoteUser() + " added " + todo);
+        log.info(className + "." + methodName + " - Redirecting " + request.getRemoteUser() + " to /list-todos");
         /* Redirect to list-todos, otherwise you should add the model attributes again */
         return new ModelAndView("redirect:list-todos");
     }
@@ -160,8 +160,8 @@ public class TodoController {
      *          A Todo list that doesn't contain the deleted Todo.
      */
     @GetMapping("/delete-todo/{id}")
-    public ModelAndView deleteToDo (@PathVariable int id) {
-        String username = loggedInUser.getLoggedInUser().getUsername();
+    public ModelAndView deleteToDo (HttpServletRequest request, @PathVariable int id) {
+        String username = request.getRemoteUser();
         String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
         log.info(className + "." + methodName + " - Get request to /delete-todo/" + id + " for user " + username);
         todoService.deleteTodo(id);
@@ -179,12 +179,12 @@ public class TodoController {
      *          The details of the Todo to be updated.
      */
     @GetMapping("/update-todo/{id}")
-    public ModelAndView updateToDoGet (@PathVariable int id) {
+    public ModelAndView updateToDoGet (HttpServletRequest request, @PathVariable int id) {
         ModelAndView modelAndView = new ModelAndView("todo");
         modelAndView.addObject("todo", todoService.retrieveTodo(id));
         log.info(className + "." + new Object(){}.getClass().getEnclosingMethod().getName() +
                 " - Get request at /update-todo/" + id + " for " +
-                loggedInUser.getLoggedInUser().getUsername() + " returned " + modelAndView.getModel().get("todo"));
+                request.getRemoteUser() + " returned " + modelAndView.getModel().get("todo"));
         return modelAndView;
     }
 
@@ -199,17 +199,17 @@ public class TodoController {
      *          A Todo list that contains the updated Todo.
      */
     @PostMapping("/update-todo/{id}")
-    public ModelAndView updateToDoPost (@PathVariable int id, @Valid Todo todo, BindingResult result) {
+    public ModelAndView updateToDoPost (HttpServletRequest request, @PathVariable int id, @Valid Todo todo, BindingResult result) {
         if (result.hasErrors()) {
             return new ModelAndView("todo");
         }
-        Users user = loggedInUser.getLoggedInUser();
+        Users user = loggedInUserService.getLoggedInUser();
         todo.setUsers(user);
         todoService.updateTodo(todo);
         String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
         log.info(className + "." + methodName +
-                " - Post request at /update-todo/" + id + " for " + user.getUsername() + " updated " + todo);
-        log.info(className + "." + methodName + " - Redirecting " + user.getUsername() + " to /list-todos");
+                " - Post request at /update-todo/" + id + " for " + request.getRemoteUser() + " updated " + todo);
+        log.info(className + "." + methodName + " - Redirecting " + request.getRemoteUser() + " to /list-todos");
         return new ModelAndView("redirect:/list-todos");
     }
 }
