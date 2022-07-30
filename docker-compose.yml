@@ -2,7 +2,7 @@ version: "3.7"
 services:
     db:
       image: postgres
-      container_name: TodoAppPostgres
+      container_name: TodoAppPostgresDB
       environment:
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: root
@@ -21,6 +21,10 @@ services:
         context: ./
         dockerfile: Dockerfile
       container_name: MyTodoApp
+      environment:
+        SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/TodoApp
+      volumes:
+        - ./logs:/var/lib/docker/springmvc/logs
       depends_on:
         - db
       ports:
